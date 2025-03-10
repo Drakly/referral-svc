@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -20,37 +21,33 @@ public class ReferralService {
     }
 
     private String generateReferralLink() {
-
         String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         // Връщаме линк с основния домейн
         return "https://darex.com/referral/" + code;
     }
 
-    // POST операция: създаване на нов реферал
-    public ReferralRequest createReferral(ReferralRequest referralRequest) {
-        // Генерирайте реферален код ако не е предоставен
+    public Referral createReferral(ReferralRequest referralRequest) {
         if (referralRequest.getReferralCode() == null || referralRequest.getReferralCode().isEmpty()) {
             referralRequest.setReferralCode(generateReferralLink());
         }
         Referral referral = Referral.builder()
-                .id(referralRequest.getId())
                 .userId(referralRequest.getUserId())
                 .referralCode(referralRequest.getReferralCode())
                 .createdAt(LocalDateTime.now())
                 .build();
 
         Referral savedReferral = referralRepository.save(referral);
-        // Преобразуване в DTO
-        return new ReferralRequest(savedReferral.getId(), savedReferral.getUserId(), savedReferral.getReferralCode(), savedReferral.getCreatedAt());
+        return savedReferral;
     }
 
-    // GET операция: извличане на реферал по userId
-    public ReferralRequest getReferralByUser(UUID userId) {
-        Referral referral = referralRepository.findByUserId(userId);
-        if (referral != null) {
-            return new ReferralRequest(referral.getId(), referral.getUserId(), referral.getReferralCode(), referral.getCreatedAt());
+    public Referral getReferralByUser(UUID userId) {
+        Optional<Referral> referral = referralRepository.findByUserId(userId);
+        if (referral.isPresent()) {
+            return referral.get();
+        }else {
+          return createReferral(ReferralRequest.builder().userId(userId).build());
         }
-        return null;
+
     }
 
     public void incrementClickCount(String referralCode) {
