@@ -22,7 +22,6 @@ public class ReferralService {
 
     private String generateReferralLink() {
         String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        // Връщаме линк с основния домейн
         return "https://darex.com/referral/" + code;
     }
 
