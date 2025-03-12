@@ -33,20 +33,15 @@ public class ReferralService {
                 .userId(referralRequest.getUserId())
                 .referralCode(referralRequest.getReferralCode())
                 .createdAt(LocalDateTime.now())
+                .clickCount(referralRequest.getClickCount())
                 .build();
 
         Referral savedReferral = referralRepository.save(referral);
         return savedReferral;
     }
 
-    public Referral getReferralByUser(UUID userId) {
-        Optional<Referral> referral = referralRepository.findByUserId(userId);
-        if (referral.isPresent()) {
-            return referral.get();
-        }else {
-          return createReferral(ReferralRequest.builder().userId(userId).build());
-        }
-
+    public Optional<Referral> getReferralByUser(UUID userId) {
+        return referralRepository.findByUserId(userId);
     }
 
     public void incrementClickCount(String referralCode) {

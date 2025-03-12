@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -24,10 +25,18 @@ public class ReferralController {
 
 
     @GetMapping("/{userId}")
-    public ResponseEntity<ReferralRequest> getReferralByUser(@PathVariable UUID userId) {
-        Referral referral = referralService.getReferralByUser(userId);
-        return ResponseEntity.ok(DtoMapper.fromReferral(referral));
-
+    public ResponseEntity<?> getReferralByUser(@PathVariable("userId") UUID userId) {
+        Optional<Referral> referralOpt = referralService.getReferralByUser(userId);
+        if (referralOpt.isPresent()) {
+            return ResponseEntity.ok(referralOpt.get());
+        } else {
+            Referral emptyReferral = Referral.builder()
+                    .userId(userId)
+                    .referralCode("")
+                    .clickCount(0)
+                    .build();
+            return ResponseEntity.ok(emptyReferral);
+        }
     }
 
     @PostMapping
