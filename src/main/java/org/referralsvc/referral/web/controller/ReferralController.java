@@ -25,18 +25,9 @@ public class ReferralController {
 
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getReferralByUser(@PathVariable("userId") UUID userId) {
-        Optional<Referral> referralOpt = referralService.getReferralByUser(userId);
-        if (referralOpt.isPresent()) {
-            return ResponseEntity.ok(referralOpt.get());
-        } else {
-            Referral emptyReferral = Referral.builder()
-                    .userId(userId)
-                    .referralCode("")
-                    .clickCount(0)
-                    .build();
-            return ResponseEntity.ok(emptyReferral);
-        }
+    public ResponseEntity<Referral> getReferralByUser(@PathVariable("userId") UUID userId) {
+        return ResponseEntity.ok(referralService.getReferralByUser(userId));
+
     }
 
     @PostMapping

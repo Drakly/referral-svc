@@ -40,9 +40,16 @@ public class ReferralService {
         return savedReferral;
     }
 
-    public Optional<Referral> getReferralByUser(UUID userId) {
-        return referralRepository.findByUserId(userId);
+    public Referral getReferralByUser(UUID userId) {
+        Optional<Referral> referralOpt = referralRepository.findByUserId(userId);
+
+        return referralOpt.orElseGet(() -> Referral.builder()
+                .userId(userId)
+                .referralCode("")
+                .clickCount(0)
+                .build());
     }
+
 
     public void incrementClickCount(String referralCode) {
         Referral referral = referralRepository.findByReferralCode(referralCode);
