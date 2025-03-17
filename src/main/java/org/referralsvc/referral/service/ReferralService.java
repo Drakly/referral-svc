@@ -21,8 +21,7 @@ public class ReferralService {
     }
 
     private String generateReferralLink() {
-        String code = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        return "https://darex.com/referral/" + code;
+        return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 
     public Referral createReferral(ReferralRequest referralRequest) {
