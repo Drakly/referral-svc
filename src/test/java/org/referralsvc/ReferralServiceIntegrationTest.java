@@ -36,15 +36,15 @@ public class ReferralServiceIntegrationTest {
 
         Referral createdReferral = referralService.createReferral(referralRequest);
 
-        assertNotNull(createdReferral.getId(), "Записаният реферал трябва да има ID");
+        assertNotNull(createdReferral.getId(), "Saved referral must have an id");
 
         Optional<Referral> foundReferral = referralRepository.findById(createdReferral.getId());
-        assertTrue(foundReferral.isPresent(), "Рефералът трябва да бъде намерен в базата");
+        assertTrue(foundReferral.isPresent(), "Referral must be found in database");
 
         Referral referralFromDb = foundReferral.get();
         assertEquals(referralRequest.getUserId(), referralFromDb.getUserId());
         assertEquals(referralRequest.getClickCount(), referralFromDb.getClickCount());
-        assertNotNull(referralFromDb.getReferralCode(), "Referral code не трябва да бъде null");
-        assertFalse(referralFromDb.getReferralCode().isEmpty(), "Referral code не трябва да бъде празен");
+        assertNotNull(referralFromDb.getReferralCode(), "Referral must not be null");
+        assertFalse(referralFromDb.getReferralCode().isEmpty(), "Referral code must not be empty");
     }
 }
